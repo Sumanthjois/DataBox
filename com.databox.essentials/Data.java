@@ -7,13 +7,13 @@ package com.databox.essentials;
 
 import com.databox.DataBase;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  *
@@ -23,6 +23,7 @@ public class Data implements DataBase{
    
      QueryGenerator queryGenerator;
      Connection connection;
+     private boolean result = false;
     
      public Data(String Driver,String DB_Url) {
          queryGenerator = new QueryGenerator();
@@ -39,17 +40,34 @@ public class Data implements DataBase{
     @Override
     public boolean Insert(String TableName,Map values) {
           
-        
+        result = false;
         String query = queryGenerator.getQuery(TableName,values,QueryGenerator.Insert);
          try {
              Statement s = connection.createStatement();
              s.executeUpdate(query);
+             result = true;
          } catch (SQLException ex) {
            System.out.println(ex);
          }
         
          System.out.println(query);
         return true;
+    }
+    
+    public boolean preparedInsert(String TableName,Map values){
+        
+      PreparedStatement ps =   queryGenerator.getQuery(TableName, values, QueryGenerator.Insert, connection);
+      result = false;
+         
+         try {
+            
+             ps.execute();
+             result  = true;
+         } catch (SQLException ex) {
+            System.out.println(ex);
+         }
+      
+      return  result;
     }
 
     @Override
