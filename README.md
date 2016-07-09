@@ -9,14 +9,14 @@ You will have to know java and have a idea about jdbc. I think thats good enough
 
 # Just an example on how this Api works!
   In jdbc if you want to insert a data into a table using prepared statement..It's really lots of code! For example it may look like this:
-          ```
+   ```
                Connection connection = DriverManager.getConnection(DB_URL);
                PreparedStatement statement = connection.prepareStatement(query);
                statement.setObject(setValue);
                ..........
                ..........
                statement.execute();
-          ```
+  ```
 **Using DataBox this whole bunch of code can be reduced to one line. For example:**
             ```
               Data data = new Data(Driver,Database_Url);
