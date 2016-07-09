@@ -5,6 +5,7 @@
  */
 package com.databox.essentials;
 
+import com.databox.generator.QueryGenerator;
 import com.databox.DataBase;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -51,7 +52,7 @@ public class Data implements DataBase{
          }
         
          System.out.println(query);
-        return true;
+        return result;
     }
     
     public boolean preparedInsert(String TableName,Map values){
