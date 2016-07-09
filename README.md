@@ -23,19 +23,19 @@ You will have to know java and have a idea about jdbc. I think thats good enough
               data.preparedInsert(TableName,values);
   ```
  
- *Where*:
- *Data* -> is the class which will help you to do all type of interactions with the DataBase.
- *Database_Url* -> is the url of the Database you want to connect to.
- *TableName* -> is the table you want to insert data into.
- *values* -> is of type Map. for example:
+ **Where**:
+*Data* -> is the class which will help you to do all type of interactions with the DataBase.
+*Database_Url* -> is the url of the Database you want to connect to.
+*TableName* -> is the table you want to insert data into.
+*values* -> is of type Map. for example:
                                
-                               ```
+   ```
                                Map values = new TreeMap();
                                values.put(ColumnName,Value);
                                values.put(ColumnName,Value);
                                ........
                                ........
-                               ```
+  ```
                                
 # Note:
     I hope to complete this as soon as possible. The basic and essential operations required for devlopers will be completed soon.
