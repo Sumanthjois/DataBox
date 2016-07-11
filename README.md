@@ -38,6 +38,7 @@ You will have to know java and have a idea about jdbc. I think thats good enough
   ```
                                
 # Note:
+    For now we will only providing api for performing all the basic operations regarding jdbc.We wil provide api for more complicated operations (For example: mixing up insert and select) on request.
     I hope to complete this as soon as possible. The basic and essential operations required for devlopers will be completed soon.
     If you can help please do. If you have any queries you can contact me here:  joissumanth@gmail.com
             
