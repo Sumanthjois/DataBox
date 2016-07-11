@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -85,9 +86,9 @@ public class Data implements DataBase{
     }
 
     @Override
-    public ResultSet Select(String TableName,List<String> values) {
-    
-      return null;
+    public ResultSet Select(String TableName,Set<String> values) {
+       queryGenerator.getQuery(TableName, values, QueryGenerator.Select);
+       return null;
     }
     
 }
