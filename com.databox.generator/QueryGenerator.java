@@ -15,10 +15,7 @@ import java.util.TreeMap;
 
 
 
-/**
- *
- * @author Jois
- */
+
 public class QueryGenerator {
    
    //instance variables 
@@ -86,7 +83,7 @@ public class QueryGenerator {
              case Insert: query =  worker.getInsertQuery(Worker.Normal);
                           break;  
              case Select: query = worker.getSelectQuery(Worker.SelectNormal);
-                          System.out.println(query);
+                          
                           break;
                           
          }
