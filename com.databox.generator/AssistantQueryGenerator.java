@@ -5,10 +5,14 @@
  */
 package com.databox.generator;
 
+
 import java.util.Map;
 import java.util.Set;
 
-
+/**
+ *
+ * @author Jois
+ */
 public class AssistantQueryGenerator {
    
    private Set<String> tableHeaders = null; 
@@ -32,7 +36,7 @@ public class AssistantQueryGenerator {
    
    
      //get Table headers
-    public String getHeaders(Map values){
+    public String getHeaders(Map values,String type){
         
         String header = BLANK;
               
@@ -52,7 +56,12 @@ public class AssistantQueryGenerator {
             }
             i++;
         }
-        
+      
+         if(type.equals(Worker.SelectNormal)){
+            
+             header = header.replaceAll(SPACE, "");
+            
+         }
          return header;
     }
     
@@ -123,4 +132,7 @@ public class AssistantQueryGenerator {
         tableHeaders = content.keySet();
         No_Of_Columns = tableHeaders.size() - 1 ;
     }
+    
+    
+   
 }
