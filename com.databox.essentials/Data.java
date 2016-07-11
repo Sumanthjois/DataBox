@@ -12,9 +12,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 
 
 /**
@@ -62,7 +62,6 @@ public class Data implements DataBase{
       result = false;
          
          try {
-            
              ps.execute();
              result  = true;
          } catch (SQLException ex) {
@@ -87,8 +86,15 @@ public class Data implements DataBase{
 
     @Override
     public ResultSet Select(String TableName,Set<String> values) {
-       queryGenerator.getQuery(TableName, values, QueryGenerator.Select);
-       return null;
+     String query =  queryGenerator.getQuery(TableName, values, QueryGenerator.Select);
+     ResultSet result = null;
+         try {
+             Statement statement = connection.createStatement();
+             result = statement.executeQuery(query);
+         } catch (SQLException ex) {
+             System.out.println(ex);
+         }
+     return result;
     }
     
 }
