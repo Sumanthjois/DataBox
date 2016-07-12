@@ -15,7 +15,10 @@ import java.util.TreeMap;
 
 
 
-
+/**
+ *
+ * @author Jois
+ */
 public class QueryGenerator {
    
    //instance variables 
@@ -23,6 +26,7 @@ public class QueryGenerator {
   
    public static final String Insert = "INSERT INTO ";
    public static final String Select = "SELECT ";
+   public static final String SelectWithWhere = "Select ";
    private Set<String> tableHeaders = null;
    private String action;
    private String TableName;
@@ -31,6 +35,8 @@ public class QueryGenerator {
    private Map<String,Object> selections = null;
    private AssistantQueryGenerator assistant;
    private Worker worker = null;
+   private String whereColumn = null;
+   private String whereValue = null;
    
    public QueryGenerator(){
         assistant = new AssistantQueryGenerator();
@@ -46,16 +52,17 @@ public class QueryGenerator {
     
     //For selecting data form table
     public String getQuery(String TableName,Set<String> values,String action){
-        selections = new TreeMap<>();
-        for(String tableHeaders:values){
-           
-            selections.put(tableHeaders, null);
-           
-           
-        }
+        selections =  Worker.toMap(values);
         setRequiredValues(selections,action,TableName);
         constructQuery();
         return query;
+    }
+    
+    public String getQuery(String TableName,Set<String> values,String action,String whereColumn,String whereValue,String operator){
+      selections = Worker.toMap(values);
+      setRequiredValues(selections,action,TableName,whereColumn,whereValue,operator);
+      constructQuery();
+      return query;
     }
     
     public PreparedStatement getQuery(String TableName, Map values,String action,Connection connection){
@@ -80,11 +87,12 @@ public class QueryGenerator {
         
          switch(action){
         
-             case Insert: query =  worker.getInsertQuery(Worker.Normal);
-                          break;  
-             case Select: query = worker.getSelectQuery(Worker.SelectNormal);
-                          
-                          break;
+             case Insert:          query =  worker.getInsertQuery(Worker.Normal);
+                                   break;  
+             case Select:          query = worker.getSelectQuery(Worker.SelectNormal);
+                                   break;
+             case SelectWithWhere: query = worker.getSelectQuery(Worker.SelectWhere);
+                                   break;  
                           
          }
         
@@ -125,7 +133,14 @@ public class QueryGenerator {
         worker = new Worker(assistant,values,action,TableName);
     }
     
-    
+    private void setRequiredValues(Map values,String action,String TableName,String whereColumn ,String whereValue,String operator){
+        assistant.setContent(values);
+        this.values = values;
+        this.action = action;
+        this.TableName = TableName;
+        tableHeaders = assistant.getTableHeaders();
+        worker = new Worker(assistant,values,action,TableName,whereColumn,whereValue,operator);
+    }
    
    
     
