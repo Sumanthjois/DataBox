@@ -17,10 +17,7 @@ import java.util.Set;
 
 
 
-/**
- *
- * @author Jois
- */
+
 public class Data implements DataBase{
    
      QueryGenerator queryGenerator;
@@ -87,14 +84,24 @@ public class Data implements DataBase{
     @Override
     public ResultSet Select(String TableName,Set<String> values) {
      String query =  queryGenerator.getQuery(TableName, values, QueryGenerator.Select);
-     ResultSet result = null;
+     
+     return getResultSet(query);
+    }
+    public ResultSet Select(String TableName,Set<String>values,String whereColumn,String whereValue,String operator){
+        String query = queryGenerator.getQuery(TableName, values, QueryGenerator.SelectWithWhere,whereColumn,whereValue,operator);
+        
+        return getResultSet(query);
+    }
+    
+    private ResultSet getResultSet(String query){
+         ResultSet result = null;
          try {
              Statement statement = connection.createStatement();
              result = statement.executeQuery(query);
          } catch (SQLException ex) {
              System.out.println(ex);
          }
-     return result;
+        
+        return result;
     }
-    
 }
