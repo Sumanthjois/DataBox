@@ -57,7 +57,7 @@ public class AssistantQueryGenerator {
             i++;
         }
       
-         if(type.equals(Worker.SelectNormal)){
+         if(type.equals(Worker.SelectNormal) || type.equals(Worker.SelectWhere)){
             
              header = header.replaceAll(SPACE, "");
             
