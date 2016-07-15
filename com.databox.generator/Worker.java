@@ -19,6 +19,7 @@ public class Worker {
     public static final String Normal = "NormalStatement"; 
     public static final String SelectNormal = "NormalSelectStatement";
     public static final String SelectWhere = "SelectWithWhere";
+    public static final String SelectPrepared = "PreparedSelectStatement";
     private Map values;
     private String action;
     private String TableName;
@@ -59,16 +60,22 @@ public class Worker {
        
        //get query for Select 
        public String getSelectQuery(String statementType){
+           
            String query = action + assistant.getHeaders(values,statementType) + " FROM " + TableName;
            
            if(statementType.equals(SelectWhere)){
-               query+=" WHERE "+whereColumn+" "+operator+" '"+whereValue+"'" ;
+             query+=" WHERE "+whereColumn+" "+operator+" '"+whereValue+"'" ;
              query =   query.replace("Select", "SELECT");
+           }
+           else if(statementType.equals(SelectPrepared)){
+             query+=" WHERE "+whereColumn+" "+operator+" ?";
+             query = query.replaceAll("Select", "SELECT");
            }
            return query;
        
        }
            
+     
      
          
        public static Map toMap(Set<String> set){
