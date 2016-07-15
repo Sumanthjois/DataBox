@@ -62,8 +62,11 @@ public class QueryGenerator {
       selections = Worker.toMap(values);
       setRequiredValues(selections,action,TableName,whereColumn,whereValue,operator);
       constructQuery();
+      
       return query;
     }
+    
+    
     
     public PreparedStatement getQuery(String TableName, Map values,String action,Connection connection){
         setRequiredValues(values,action,TableName);
@@ -80,7 +83,19 @@ public class QueryGenerator {
         return ps;
     }
    
-    
+    public PreparedStatement getQuery(String TableName,Set values,String action,Connection connection,String whereColumn,String whereValue,String operator){
+        selections = Worker.toMap(values);
+        setRequiredValues(selections,action,TableName,whereColumn,whereValue,operator);
+        PreparedStatement ps = null;
+        constructPreparedQuery();
+        try{
+            ps = connection.prepareStatement(query);
+            ps.setObject(1, whereValue);
+        }catch(SQLException ex){
+            
+        }
+        return ps;
+    }
     
     private void constructQuery(){
       
@@ -104,8 +119,11 @@ public class QueryGenerator {
        switch(action)
        {
            case Insert:query =  worker.getInsertQuery(Worker.Prepared);
-                       System.out.println(query);
-                       break; 
+                        break; 
+           
+           case SelectWithWhere: query = worker.getSelectQuery(Worker.SelectPrepared);
+                                 System.out.println(query); 
+                                 break;               
        }
    }
     
