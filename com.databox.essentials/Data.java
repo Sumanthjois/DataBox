@@ -7,6 +7,7 @@ package com.databox.essentials;
 
 import com.databox.generator.QueryGenerator;
 import com.databox.DataBase;
+import com.databox.generator.Worker;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,6 +19,10 @@ import java.util.Set;
 
 
 
+/**
+ *
+ * @author Jois
+ */
 public class Data implements DataBase{
    
      QueryGenerator queryGenerator;
@@ -87,11 +92,34 @@ public class Data implements DataBase{
      
      return getResultSet(query);
     }
-    public ResultSet Select(String TableName,Set<String>values,String whereColumn,String whereValue,String operator){
+    public ResultSet Select(String TableName,Set<String> values,String whereColumn,String whereValue,String operator){
         String query = queryGenerator.getQuery(TableName, values, QueryGenerator.SelectWithWhere,whereColumn,whereValue,operator);
         
         return getResultSet(query);
     }
+    
+    public ResultSet preparedSelect(String TableName,Set<String> values,String whereColumn,String whereValue,String operator){
+       
+      PreparedStatement ps =  queryGenerator.getQuery(TableName, values, QueryGenerator.SelectWithWhere,connection,whereColumn,whereValue,operator);
+        ResultSet rs = null;
+        try {
+          rs = ps.executeQuery();
+         } catch (SQLException ex) {
+            System.out.println(ex);
+         }
+      return rs;
+    }
+    
+    public ResultSet Select(String TableName,Set<String> values,String whereQuery){
+      String query =  queryGenerator.getQuery(TableName, values, QueryGenerator.Select);
+      if(whereQuery.charAt(0)!=' ' ){
+          whereQuery =" "+whereQuery;
+      }
+      query+= whereQuery;
+      return getResultSet(query);
+    }
+    
+    
     
     private ResultSet getResultSet(String query){
          ResultSet result = null;
