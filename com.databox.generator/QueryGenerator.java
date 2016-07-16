@@ -160,6 +160,8 @@ public class QueryGenerator {
         worker = new Worker(assistant,values,action,TableName,whereColumn,whereValue,operator);
     }
    
-   
+   public PreparedStatement getPreparedStatement(String query,List<String> whereValues,Connection connection){
+       return worker.setPreparedValues(query, whereValues,connection);
+   }
     
 }
