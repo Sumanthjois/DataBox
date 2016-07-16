@@ -9,10 +9,13 @@ import java.sql.ResultSet;
 import java.util.Map;
 import java.util.Set;
 
-
+/**
+ *
+ * @author Jois
+ */
 public interface DataBase {
     public boolean Insert(String TableName,Map values);
-    public boolean Delete(String TableName,Map values);
+    public int Delete(String TableName,String whereClause);
     public boolean Update(String TableName,Map newValues,Map whereValues);
     public ResultSet Select(String TableName,Set<String> values);
 }
