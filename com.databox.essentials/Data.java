@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -101,13 +102,8 @@ public class Data implements DataBase{
     public ResultSet preparedSelect(String TableName,Set<String> values,String whereColumn,String whereValue,String operator){
        
       PreparedStatement ps =  queryGenerator.getQuery(TableName, values, QueryGenerator.SelectWithWhere,connection,whereColumn,whereValue,operator);
-        ResultSet rs = null;
-        try {
-          rs = ps.executeQuery();
-         } catch (SQLException ex) {
-            System.out.println(ex);
-         }
-      return rs;
+       
+      return getResultSet(ps);
     }
     
     public ResultSet Select(String TableName,Set<String> values,String whereQuery){
@@ -119,7 +115,15 @@ public class Data implements DataBase{
       return getResultSet(query);
     }
     
-    
+    public ResultSet preparedSelect(String TableName,Set<String> values,String whereQuery,List whereValues){
+      String query =  queryGenerator.getQuery(TableName, values, QueryGenerator.Select);
+      if(whereQuery.charAt(0)!=' ' ){
+          whereQuery =" "+whereQuery;
+      }
+      query+= whereQuery;
+      PreparedStatement ps = queryGenerator.getPreparedStatement(query,whereValues,connection);
+        return getResultSet(ps);
+    }
     
     private ResultSet getResultSet(String query){
          ResultSet result = null;
@@ -132,4 +136,16 @@ public class Data implements DataBase{
         
         return result;
     }
+    
+    
+    private ResultSet getResultSet(PreparedStatement ps){
+         ResultSet rs = null;
+        try {
+          rs = ps.executeQuery();
+         } catch (SQLException ex) {
+            System.out.println(ex);
+         }
+      return rs;
+    }
+    
 }
