@@ -5,9 +5,15 @@
  */
 package com.databox.generator;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+
 
 /**
  *
@@ -85,5 +91,23 @@ public class Worker {
             }
            return selections;
        }
+    
        
+   public PreparedStatement setPreparedValues(String query,List<String> whereValues,Connection connection){
+   PreparedStatement ps = null;
+        try {
+            ps = connection.prepareStatement(query);
+           
+             int i = 1;
+             for(String object : whereValues){
+                 ps.setObject(i, object);
+                  i++;
+             }
+         
+        } catch (SQLException ex) {
+          System.out.println(ex);
+        }
+   
+   return ps;
+   }
 }
