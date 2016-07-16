@@ -20,6 +20,7 @@ import java.util.Set;
 
 
 
+
 /**
  *
  * @author Jois
@@ -75,10 +76,18 @@ public class Data implements DataBase{
     }
 
     @Override
-    public boolean Delete(String TableName,Map values) {
-
+    public int Delete(String TableName,String whereClause) {
+        String query = queryGenerator.getQuery(TableName,whereClause,QueryGenerator.Delete);
+        int result = 0; 
+        try {
+             Statement s = connection.createStatement();
+              result = s.executeUpdate(query);
+            
+         } catch (SQLException ex) {
+            System.out.println(ex);
+         }
         
-        return true;
+        return result;
     }
 
     @Override
@@ -123,6 +132,20 @@ public class Data implements DataBase{
       query+= whereQuery;
       PreparedStatement ps = queryGenerator.getPreparedStatement(query,whereValues,connection);
         return getResultSet(ps);
+    }
+    
+    
+    public int preparedDelete(String TableName,String whereClause,List whereValues){
+       int result = 0;
+       String query =  QueryGenerator.Delete + TableName + " " + whereClause;
+       PreparedStatement ps = queryGenerator.getPreparedStatement(query,whereValues,connection);
+         try {
+            int i =  ps.executeUpdate();
+            
+         } catch (SQLException ex) {
+             System.out.println(ex);
+         }
+        return result;
     }
     
     private ResultSet getResultSet(String query){
