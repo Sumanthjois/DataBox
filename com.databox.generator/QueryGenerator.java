@@ -23,7 +23,7 @@ public class QueryGenerator {
    
    //instance variables 
    
-  
+   public static final String Delete = "DELETE FROM ";
    public static final String Insert = "INSERT INTO ";
    public static final String Select = "SELECT ";
    public static final String SelectWithWhere = "Select ";
@@ -54,6 +54,12 @@ public class QueryGenerator {
     public String getQuery(String TableName,Set<String> values,String action){
         selections =  Worker.toMap(values);
         setRequiredValues(selections,action,TableName);
+        constructQuery();
+        return query;
+    }
+    
+     public String getQuery(String TableName,String whereClause,String action ){
+       setRequiredValues(TableName,whereClause,action);
         constructQuery();
         return query;
     }
@@ -96,6 +102,7 @@ public class QueryGenerator {
         }
         return ps;
     }
+   
     
     private void constructQuery(){
       
@@ -108,6 +115,9 @@ public class QueryGenerator {
                                    break;
              case SelectWithWhere: query = worker.getSelectQuery(Worker.SelectWhere);
                                    break;  
+             case Delete:          query = worker.getDeleteQuery(Worker.DeleteNormal);
+                                   System.out.println(query);
+                                   break;                      
                           
          }
         
@@ -159,9 +169,15 @@ public class QueryGenerator {
         tableHeaders = assistant.getTableHeaders();
         worker = new Worker(assistant,values,action,TableName,whereColumn,whereValue,operator);
     }
+    
+    private void setRequiredValues(String TableName,String whereClause,String action){
+        this.action = action;
+        this.TableName = TableName;
+        worker = new Worker(TableName,whereClause);
+    }
    
    public PreparedStatement getPreparedStatement(String query,List<String> whereValues,Connection connection){
-       return worker.setPreparedValues(query, whereValues,connection);
+       return Worker.setPreparedValues(query, whereValues,connection);
    }
     
 }
