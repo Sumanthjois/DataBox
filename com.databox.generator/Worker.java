@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,6 +27,7 @@ public class Worker {
     public static final String SelectNormal = "NormalSelectStatement";
     public static final String SelectWhere = "SelectWithWhere";
     public static final String SelectPrepared = "PreparedSelectStatement";
+    public static final String DeleteNormal = "DeleteNormal";
     private Map values;
     private String action;
     private String TableName;
@@ -33,6 +35,7 @@ public class Worker {
     private String whereColumn = null;
     private String whereValue = null;
     private String operator = null;
+    private String whereClause = null;
     
      public Worker(AssistantQueryGenerator assistant,Map values,String action,String TableName){
          this.action = action;
@@ -49,6 +52,10 @@ public class Worker {
          this.whereColumn = whereColumn;
          this.whereValue = whereValue;
          this.operator = operator;
+     }
+     public Worker(String TableName,String whereClause){
+         this.TableName = TableName;
+         this.whereClause = whereClause;
      }
    
        //get query for Insert 
@@ -81,7 +88,13 @@ public class Worker {
        
        }
            
-     
+     public String getDeleteQuery(String statementType){
+      String query = "DELETE FROM "+TableName+" ";
+         if(statementType.equals(DeleteNormal)){
+             query+=whereClause;
+         }
+         return query;
+     }
      
          
        public static Map toMap(Set<String> set){
@@ -93,7 +106,7 @@ public class Worker {
        }
     
        
-   public PreparedStatement setPreparedValues(String query,List<String> whereValues,Connection connection){
+   public static PreparedStatement setPreparedValues(String query,List<String> whereValues,Connection connection){
    PreparedStatement ps = null;
         try {
             ps = connection.prepareStatement(query);
@@ -101,7 +114,7 @@ public class Worker {
              int i = 1;
              for(String object : whereValues){
                  ps.setObject(i, object);
-                  i++;
+                 i++;
              }
          
         } catch (SQLException ex) {
