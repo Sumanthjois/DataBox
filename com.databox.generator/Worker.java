@@ -22,12 +22,14 @@ import java.util.TreeMap;
  */
 public class Worker {
     
-    public static final String Prepared = "PreparedStatement";
-    public static final String Normal = "NormalStatement"; 
-    public static final String SelectNormal = "NormalSelectStatement";
-    public static final String SelectWhere = "SelectWithWhere";
+    public static final String Prepared       = "PreparedStatement";
+    public static final String Normal         = "NormalStatement"; 
+    public static final String SelectNormal   = "NormalSelectStatement";
+    public static final String SelectWhere    = "SelectWithWhere";
     public static final String SelectPrepared = "PreparedSelectStatement";
-    public static final String DeleteNormal = "DeleteNormal";
+    public static final String DeleteNormal   = "DeleteNormal";
+    public static final String UpdateNormal   = "UpdateNormal";
+    public static final String UpdatePrepared = "PreparedUpdate";
     private Map values;
     private String action;
     private String TableName;
@@ -58,6 +60,12 @@ public class Worker {
          this.whereClause = whereClause;
      }
    
+     public Worker(String TableName,AssistantQueryGenerator assistant,Map values,String whereClause){
+         this.TableName = TableName;
+         this.assistant = assistant;
+         this.values = values;
+         this.whereClause = whereClause;
+     } 
        //get query for Insert 
        public String getInsertQuery(String statementType){
         String preparedValues = null;
@@ -97,6 +105,52 @@ public class Worker {
      }
      
          
+    public String getUpdateQuery(String statementType){
+       String query = "UPDATE "+TableName + " SET ";
+       String addOn = "";
+       Set<String> tableHeaders = assistant.getTableHeaders();
+       int length = tableHeaders.size() - 1;
+       int i = 0;
+       
+       
+       for(String columnName : tableHeaders){
+           if(statementType.equals(UpdateNormal)){
+               Object value =  values.get(columnName);
+          
+           if(i == length){
+                       if(values.get(columnName) == null){
+                                 addOn += columnName+"="+values.get(columnName)+" ";
+                       }else{
+                           addOn += columnName+"='"+values.get(columnName)+"' ";
+                       }
+                          
+           }
+           else{
+               if(values.get(columnName) == null){
+                   addOn += columnName+"="+values.get(columnName)+", ";
+               }else{
+                   addOn += columnName+"='"+values.get(columnName)+"', ";
+               }
+                          
+           }
+           }
+           else if(statementType.equals(UpdatePrepared)){
+                if(i == length){
+                  addOn += columnName+"=? ";
+                 }
+               else{
+                  addOn += columnName+"=?, ";
+              }
+           }
+           
+           i++;
+       }
+        addOn+= whereClause;
+        query += addOn;
+        
+        return query;
+    } 
+     
        public static Map toMap(Set<String> set){
            Map selections = new TreeMap();
             for(String tableHeaders:set){
