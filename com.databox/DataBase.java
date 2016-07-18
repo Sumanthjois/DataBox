@@ -16,6 +16,6 @@ import java.util.Set;
 public interface DataBase {
     public boolean Insert(String TableName,Map values);
     public int Delete(String TableName,String whereClause);
-    public boolean Update(String TableName,Map newValues,Map whereValues);
+    public int Update(String TableName,Map newValues,String whereClause);
     public ResultSet Select(String TableName,Set<String> values);
 }
