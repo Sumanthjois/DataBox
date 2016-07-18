@@ -19,12 +19,12 @@ You will have to know java and have a idea about jdbc. I think thats good enough
   ```
 **Using DataBox this whole bunch of code can be reduced to one line. For example:**
   ```
-              Data data = new Data(Driver,Database_Url);
+              DataBox data = new DataBox(Driver,Database_Url);
               data.preparedInsert(TableName,values);
   ```
  
 * Where:
-  * Data: is the class which will help you to do all type of interactions with the DataBase.
+  * DataBox: is the class which will help you to do all type of interactions with the DataBase.
   * Database_Url: is the url of the Database you want to connect to.
   * TableName: is the table you want to insert data into.
   * values: is of type Map. For example:
