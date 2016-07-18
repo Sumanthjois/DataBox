@@ -22,7 +22,7 @@ import java.util.TreeMap;
 public class QueryGenerator {
    
    //instance variables 
-   
+   public static final String Update = "UPDATE "; 
    public static final String Delete = "DELETE FROM ";
    public static final String Insert = "INSERT INTO ";
    public static final String Select = "SELECT ";
@@ -73,6 +73,13 @@ public class QueryGenerator {
     }
     
     
+    public String getQuery(String TableName,Map newValues,String whereClause,String action){
+        
+        setRequiredValues(TableName,newValues,action,whereClause);
+        
+        constructQuery();
+        return query;
+    }
     
     public PreparedStatement getQuery(String TableName, Map values,String action,Connection connection){
         setRequiredValues(values,action,TableName);
@@ -103,6 +110,26 @@ public class QueryGenerator {
         return ps;
     }
    
+    public PreparedStatement getQuery(String TableName,Map newValues,String whereClause,Set<String> whereValues,Connection connection,String action){
+        int i = 1;
+        setRequiredValues(TableName,newValues,action,whereClause);
+        constructPreparedQuery();
+        PreparedStatement ps = null;
+       try {
+           ps = connection.prepareStatement(query);
+           for(String tableHeaders : tableHeaders){
+               ps.setObject(i, newValues.get(tableHeaders));
+               i++;
+           }
+           for(String whereValue : whereValues){
+               ps.setObject(i, whereValue);
+                 i++;
+              }
+       } catch (SQLException ex) {
+           System.out.println(ex);
+       }
+        return ps;
+    } 
     
     private void constructQuery(){
       
@@ -116,9 +143,9 @@ public class QueryGenerator {
              case SelectWithWhere: query = worker.getSelectQuery(Worker.SelectWhere);
                                    break;  
              case Delete:          query = worker.getDeleteQuery(Worker.DeleteNormal);
-                                   System.out.println(query);
                                    break;                      
-                          
+             case Update:          query = worker.getUpdateQuery(Worker.UpdateNormal);
+                                   break;                           
          }
         
     
@@ -128,12 +155,14 @@ public class QueryGenerator {
        
        switch(action)
        {
-           case Insert:query =  worker.getInsertQuery(Worker.Prepared);
-                        break; 
+           case Insert         : query = worker.getInsertQuery(Worker.Prepared);
+                                 break; 
            
-           case SelectWithWhere: query = worker.getSelectQuery(Worker.SelectPrepared);
-                                 System.out.println(query); 
-                                 break;               
+           case SelectWithWhere: query = worker.getSelectQuery(Worker.SelectPrepared); 
+                                 break;   
+           
+           case Update         : query = worker.getUpdateQuery(Worker.UpdatePrepared);
+                                 break;
        }
    }
     
@@ -176,6 +205,15 @@ public class QueryGenerator {
         worker = new Worker(TableName,whereClause);
     }
    
+    private void setRequiredValues(String TableName,Map newValues,String action,String whereValues){
+        assistant.setContent(newValues);
+        this.action = action;
+        this.TableName = TableName;
+        tableHeaders = assistant.getTableHeaders();
+        worker = new Worker(TableName,assistant,newValues,whereValues); 
+        
+    }
+    
    public PreparedStatement getPreparedStatement(String query,List<String> whereValues,Connection connection){
        return Worker.setPreparedValues(query, whereValues,connection);
    }
