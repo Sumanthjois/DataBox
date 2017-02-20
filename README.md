@@ -1,5 +1,5 @@
 # DataBox
-Just an Api for helping all those people who are fed up of writing tons of JDBC code.
+Databox is just an Api for helping all those people who are fed up of writing tons of JDBC code.
 
 # What is DataBox?
 Fed up of writning tons of code for just updating or inserting a small data into your database? Well DataBox is a Api which helps you do all jdbc operations with using really less lines of code. It mainly reduces the boilerplate code.
